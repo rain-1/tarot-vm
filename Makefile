@@ -1,5 +1,9 @@
 CC=gcc
-CFLAGS+=-g -O3 -std=c99 -Wall -Werror -Wno-unused-but-set-variable -D_GNU_SOURCE -falign-functions=8
+#CC=clang
+CFLAGS+=-g -O3 -std=c99 -Wall -Werror -D_GNU_SOURCE
+#CFLAGS+=-malign-functions=8
+CFLAGS+=-falign-functions=8
+#CFLAGS+=-fsanitize=address
 
 SOURCES=read_word.c \
  data.c gc.c builtins.c \

@@ -8,14 +8,24 @@
 #include "data.h"
 #include "interpreter.h"
 
+#define SYMBOL_TABLE_SIZE (1 << 14)
+
+char **symbol_table = NULL;
+
+void vm_init() {
+	vm_code = calloc(VM_CODE_SIZE, sizeof(scm));
+	stack = calloc(STACKSIZE, sizeof(scm));
+	symbol_table = calloc(SYMBOL_TABLE_SIZE, sizeof(char));
+}
+
 ////
 // VM
 
-scm vm_code[VM_CODE_SIZE] = { 0 };
+scm *vm_code = NULL;
 int vm_code_size = 0;
 
 
-scm stack[STACKSIZE] = { 0 };
+scm *stack = NULL;
 
 scm reg_acc = 0;
 scm *reg_env = NULL;
@@ -48,8 +58,6 @@ void vm_dump_code()
 ////
 // Symbol Table
 
-#define SYMBOL_TABLE_SIZE (1 << 14)
-char *symbol_table[SYMBOL_TABLE_SIZE];
 vm_uint symbol_table_size = 0;
 
 char *symtab_lookup(scm sym) {

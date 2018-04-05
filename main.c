@@ -49,6 +49,8 @@ int main(int argc, char **argv) {
 		exit(-1);
 	}
 
+	vm_init();
+
 	/// SETUP ARGV
 	reg_acc = ATOM_NUL;
 	for(i = argc-1; i > dd_pos; i--) {
@@ -86,6 +88,7 @@ void load_and_exec(char *filename)
 	scm *tmp;
 	FILE *code_fptr = fopen(filename, "r");
 	
+
 	if(!code_fptr) {
 		fprintf(stderr, "file <%s>\n", filename);
 		exit(-1);

@@ -208,6 +208,7 @@ typedef scm (*bltn)(void);
 static inline scm
 mk_bltn(bltn f)
 {
+	assert(!(SCM_PTR(f) & 0b111));
 	return SCM_PTR(f) | TAG_BLTN;
 }
 

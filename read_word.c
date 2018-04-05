@@ -28,7 +28,7 @@ char *read_word(FILE *fptr) {
 		
 		if(!c) break;
 		
-		if(i > wlen) {
+		if(i >= wlen) {
 			wlen *= 2;
 			wbuf = realloc(wbuf, wlen);
 		}

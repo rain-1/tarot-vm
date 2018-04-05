@@ -3,14 +3,14 @@
 // VM
 #define VM_CODE_SIZE (1<<20)
 
-extern scm vm_code[VM_CODE_SIZE];
+extern scm *vm_code;
 extern int vm_code_size;
 
 
 #define STACKSIZE (1<<27)
 // 1<<13 = 8192
 
-extern scm stack[STACKSIZE];
+extern scm *stack;
 
 extern scm reg_acc;
 extern scm *reg_env;
@@ -21,6 +21,7 @@ extern scm reg_rbp_tmp;
 
 extern scm reg_rsp;
 
+void vm_init();
 void vm_add_codeword(scm w);
 void vm_dump_code();
 
