@@ -15,7 +15,7 @@ char **symbol_table = NULL;
 void vm_init() {
 	vm_code = calloc(VM_CODE_SIZE, sizeof(scm));
 	stack = calloc(STACKSIZE, sizeof(scm));
-	symbol_table = calloc(SYMBOL_TABLE_SIZE, sizeof(char));
+	symbol_table = calloc(SYMBOL_TABLE_SIZE, sizeof(char*));
 }
 
 ////
@@ -79,10 +79,16 @@ scm symtab_intern(char *name) {
 		}
 	}
 
+	if(symbol_table_size >= SYMBOL_TABLE_SIZE) {
+		fprintf(stderr, "ran out of space for symbols\n");
+		exit(1);
+	}
+	
 	// it doesn't, so create it
 	idx = symbol_table_size;
 	symbol_table[idx] = strdup(name);
 	symbol_table_size++;
+	
 	return mk_sym(idx);
 }
 
