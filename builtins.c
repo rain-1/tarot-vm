@@ -1,5 +1,6 @@
 #include <assert.h>
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +16,11 @@
 // get Nth thing on the stack
 #define STACK(N) stack[reg_rbp + 1 + N]
 
+#if 0
 #define ALIGN __attribute((aligned (8)))
+#else
+#define ALIGN
+#endif
 
 //////////////////////////////////////////////////
 // list functions
