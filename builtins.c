@@ -15,63 +15,62 @@
 // get Nth thing on the stack
 #define STACK(N) stack[reg_rbp + 1 + N]
 
-
-
+#define ALIGN __attribute((aligned (8)))
 
 //////////////////////////////////////////////////
 // list functions
 
-scm bltn_cons(void) {
+scm bltn_cons(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	return allocate_cons(p, q);
 }
 
-scm bltn_car(void) {
+scm bltn_car(void) ALIGN {
 	scm a = STACK(0);
 	return get_cons_car(a);
 }
 
-scm bltn_cdr(void) {
+scm bltn_cdr(void) ALIGN {
 	scm a = STACK(0);
 	return get_cons_cdr(a);
 }
 
-scm bltn_nullq(void) {
+scm bltn_nullq(void) ALIGN {
 	if (STACK(0) == ATOM_NUL)
 		return ATOM_TRU;
 	else
 		return ATOM_FLS;
 }
 
-scm bltn_pairq(void) {
+scm bltn_pairq(void) ALIGN {
 	return mk_bool(scm_gettag(STACK(0)) == TAG_CONS);
 }
 
-scm bltn_symbolq(void) {
+scm bltn_symbolq(void) ALIGN {
 	return mk_bool(scm_gettag(STACK(0)) == ATOM_SYM);
 }
 
-scm bltn_stringq(void) {
+scm bltn_stringq(void) ALIGN {
 	return mk_bool(scm_gettag(STACK(0)) == TAG_STRG);
 }
 
-scm bltn_charq(void) {
+scm bltn_charq(void) ALIGN {
 	return mk_bool(scm_gettag(STACK(0)) == ATOM_CHR);
 }
 
-scm bltn_booleanq(void) {
+scm bltn_booleanq(void) ALIGN {
 	scm x = scm_gettag(STACK(0));
 	return mk_bool(x == ATOM_TRU || x == ATOM_FLS);
 }
 
-scm bltn_numberq(void) {
+scm bltn_numberq(void) ALIGN {
 	return mk_bool(scm_gettag(STACK(0)) == TAG_NUMB);
 }
 
 void display_helper(FILE *to, scm atom);
 	
-scm bltn_error(void) {
+scm bltn_error(void) ALIGN {
 	scm atom = STACK(0);
 	display_helper(stderr, atom);
 	fprintf(stderr, "\n");
@@ -79,7 +78,7 @@ scm bltn_error(void) {
 	exit(1);
 }
 
-scm bltn_exit(void) {
+scm bltn_exit(void) ALIGN {
 	exit(1);
 }
 
@@ -89,7 +88,7 @@ scm bltn_exit(void) {
 //////////////////////////////////////////////////
 // printing functions
 
-scm bltn_display_port(void) {
+scm bltn_display_port(void) ALIGN {
 	scm atom = STACK(1);
 	scm port = STACK(0);
 	FILE *to;
@@ -146,7 +145,7 @@ void display_helper(FILE *to, scm atom) {
 	}
 }
 
-scm bltn_newline(void) {
+scm bltn_newline(void) ALIGN {
 	scm port = STACK(0);
 	FILE *to;
 
@@ -168,13 +167,13 @@ scm bltn_newline(void) {
 //////////////////////////////////////////////////
 // equality functions
 
-scm bltn_eq(void) {
+scm bltn_eq(void) ALIGN {
 	if (STACK(0) == STACK(1))
 		return ATOM_TRU;
 	else
 		return ATOM_FLS;
 }
-scm bltn_equals(void) {
+scm bltn_equals(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
@@ -192,7 +191,7 @@ scm bltn_equals(void) {
 //////////////////////////////////////////////////
 // arithmetic operators
 
-scm bltn_mul(void) {
+scm bltn_mul(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
@@ -200,7 +199,7 @@ scm bltn_mul(void) {
 	return mk_numb(get_numb(p) * get_numb(q));
 }
 
-scm bltn_div(void) {
+scm bltn_div(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
@@ -208,7 +207,7 @@ scm bltn_div(void) {
 	return mk_numb(get_numb(p) / get_numb(q));
 }
 
-scm bltn_add(void) {
+scm bltn_add(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
@@ -216,7 +215,7 @@ scm bltn_add(void) {
 	return mk_numb(get_numb(p) + get_numb(q));
 }
 
-scm bltn_sub(void) {
+scm bltn_sub(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
@@ -224,7 +223,7 @@ scm bltn_sub(void) {
 	return mk_numb(get_numb(p) - get_numb(q));
 }
 
-scm bltn_mod(void) {
+scm bltn_mod(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
@@ -238,28 +237,28 @@ scm bltn_mod(void) {
 //////////////////////////////////////////////////
 // inequalities
 
-scm bltn_lt(void) {
+scm bltn_lt(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
 	info_assert(scm_gettag(q) == TAG_NUMB);
 	return mk_bool(get_numb(p) < get_numb(q));
 }
-scm bltn_gt(void) {
+scm bltn_gt(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
 	info_assert(scm_gettag(q) == TAG_NUMB);
 	return mk_bool(get_numb(p) > get_numb(q));
 }
-scm bltn_le(void) {
+scm bltn_le(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
 	info_assert(scm_gettag(q) == TAG_NUMB);
 	return mk_bool(get_numb(p) <= get_numb(q));
 }
-scm bltn_ge(void) {
+scm bltn_ge(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
@@ -273,14 +272,14 @@ scm bltn_ge(void) {
 //////////////////////////////////////////////////
 // mutation
 
-scm bltn_set_car(void) {
+scm bltn_set_car(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	set_cons_car(p, q);
 	return ATOM_FLS;
 }
 
-scm bltn_set_cdr(void) {
+scm bltn_set_cdr(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	set_cons_cdr(p, q);
@@ -293,18 +292,18 @@ scm bltn_set_cdr(void) {
 //////////////////////////////////////////////////
 // vectors
 
-scm bltn_make_vector(void) {
+scm bltn_make_vector(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	info_assert(scm_gettag(p) == TAG_NUMB);
 	return allocate_vect(get_numb(p), q);
 }
 
-scm bltn_vectorq(void) {
+scm bltn_vectorq(void) ALIGN {
 	return mk_bool(scm_gettag(STACK(0)) == TAG_VECT);
 }
 
-scm bltn_vector_ref(void) {
+scm bltn_vector_ref(void) ALIGN {
 	scm vec = STACK(0);
 	scm idx = STACK(1);
 	info_assert(scm_gettag(idx) == TAG_NUMB);
@@ -312,7 +311,7 @@ scm bltn_vector_ref(void) {
 	return get_vect(vec)[1 + get_numb(idx)];
 }
 
-scm bltn_vector_set(void) {
+scm bltn_vector_set(void) ALIGN {
 	scm vec = STACK(0);
 	scm idx = STACK(1);
 	scm val = stack[reg_rbp + 3];
@@ -321,7 +320,7 @@ scm bltn_vector_set(void) {
 	return val;
 }
 
-scm bltn_vector_length(void) {
+scm bltn_vector_length(void) ALIGN {
 	return mk_numb(get_hdr_scm_size(get_vect(STACK(0))[0]));
 }
 
@@ -331,7 +330,7 @@ scm bltn_vector_length(void) {
 //////////////////////////////////////////////////
 ///// string ones
 
-scm bltn_make_string(void) {
+scm bltn_make_string(void) ALIGN {
 	scm args_0 = STACK(0);
 	scm args_1 = STACK(1);
 	
@@ -358,7 +357,7 @@ scm bltn_make_string(void) {
 
 }
 
-scm bltn_string_set(void) {
+scm bltn_string_set(void) ALIGN {
 	scm args_0 = STACK(0);
 	scm args_1 = STACK(1);
 	scm args_2 = stack[reg_rbp + 3];
@@ -377,7 +376,7 @@ scm bltn_string_set(void) {
 	return 0;
 }
 
-scm bltn_string_ref(void) {
+scm bltn_string_ref(void) ALIGN {
 	scm args_0 = STACK(0);
 	scm args_1 = STACK(1);
 	//  info_assert(args_num == 2);
@@ -392,13 +391,13 @@ scm bltn_string_ref(void) {
 	return mk_chr(get_strg_data(args_0)[i]);
 }
 
-scm bltn_string_length(void) {
+scm bltn_string_length(void) ALIGN {
 	scm args_0 = STACK(0);
 	info_assert(scm_gettag(args_0) == TAG_STRG);
 	return mk_numb(get_strg_len(args_0));
 }
 
-scm bltn_string_to_symbol(void) {
+scm bltn_string_to_symbol(void) ALIGN {
 	scm args_0 = STACK(0);
 	//info_assert(bytecode_args_num == 1);
 
@@ -409,7 +408,7 @@ scm bltn_string_to_symbol(void) {
 	return res;
 }
 
-scm bltn_string_eql(void) {
+scm bltn_string_eql(void) ALIGN {
 	scm args_0 = STACK(0);
 	scm args_1 = STACK(1);
 
@@ -425,19 +424,19 @@ scm bltn_string_eql(void) {
 	return ATOM_TRU;
 }
 
-scm bltn_number_to_char(void) {
+scm bltn_number_to_char(void) ALIGN {
 	return mk_chr(get_numb(STACK(0)));
 }
-scm bltn_char_to_number(void) {
+scm bltn_char_to_number(void) ALIGN {
 	return mk_numb(get_chr(STACK(0)));
 }
-scm bltn_symb_to_strn(void) {
+scm bltn_symb_to_strn(void) ALIGN {
 	char *s = symtab_lookup(STACK(0));
 	info_assert(s);
 	return allocate_strg(s, strlen(s));
 }
 
-scm bltn_strn_append(void) {
+scm bltn_strn_append(void) ALIGN {
 	scm p = STACK(0);
 	scm q = STACK(1);
 	scm s = allocate_strg(NULL, get_strg_len(p) + get_strg_len(q));
@@ -455,20 +454,20 @@ scm bltn_strn_append(void) {
 //////////////////////////////////////////////////
 // io
 
-scm bltn_eof_objectq(void) {
+scm bltn_eof_objectq(void) ALIGN {
 	int r = get_chr(STACK(0)) == -1;
 	//	if(r)puts("OEOF");
 	return mk_bool(r);
 }
 
-scm bltn_read_char(void) {
+scm bltn_read_char(void) ALIGN {
 	info_assert(scm_gettag(STACK(0)) == ATOM_PRT);
 	char c=fgetc(port_get_file(STACK(0)));
 	//		printf("CHR:%c\n", c);
 	return mk_chr(c);
 }
 
-scm bltn_open_input_file(void) {
+scm bltn_open_input_file(void) ALIGN {
 	info_assert(scm_gettag(STACK(0)) == TAG_STRG);
 
 	FILE *f = fopen((char *)get_strg_data(STACK(0)), "r");
@@ -480,7 +479,7 @@ scm bltn_open_input_file(void) {
 	return mk_port(f);
 }
 
-scm bltn_open_output_file(void) {
+scm bltn_open_output_file(void) ALIGN {
 	info_assert(scm_gettag(STACK(0)) == TAG_STRG);
 
 	FILE *f = fopen((char *)get_strg_data(STACK(0)), "a");
@@ -492,7 +491,7 @@ scm bltn_open_output_file(void) {
 	return mk_port(f);
 }
 
-scm bltn_close_port(void) {
+scm bltn_close_port(void) ALIGN {
 	info_assert(scm_gettag(STACK(0)) == ATOM_PRT);
 
 	port_close(STACK(0));
@@ -510,7 +509,7 @@ int fpeek(FILE *stream)
 	return c;
 }
 
-scm bltn_peek_char(void) {
+scm bltn_peek_char(void) ALIGN {
 	info_assert(scm_gettag(STACK(0)) == ATOM_PRT);
 	return mk_chr(fpeek(port_get_file(STACK(0))));
 }
@@ -521,7 +520,7 @@ scm bltn_peek_char(void) {
 //////////////////////////////////////////////////
 // VM
 
-scm bltn_vm_open() {
+scm bltn_vm_open(void) ALIGN {
 	int fd[2];
 	// make a pipe
 	info_assert(!pipe(&fd[0]));
@@ -530,7 +529,7 @@ scm bltn_vm_open() {
 	return mk_pipe(fdopen(fd[1], "w"), fdopen(fd[0], "r"));
 }
 
-scm bltn_vm_finish() {
+scm bltn_vm_finish(void) ALIGN {
 	scm p = STACK(0);
 	info_assert(scm_gettag(p) == ATOM_PRT);
 
@@ -553,7 +552,7 @@ scm bltn_vm_finish() {
 	return reg_acc;
 }
 
-scm bltn_gensym(void) {
+scm bltn_gensym(void) ALIGN {
 	char string_tmp_buf[512] = { 0 };
 
 	info_assert(scm_gettag(STACK(0)) == TAG_STRG);
@@ -565,14 +564,14 @@ scm bltn_gensym(void) {
 
 static scm parameter_argv;
 
-scm bltn_command_line_arguments() {
+scm bltn_command_line_arguments(void) ALIGN {
 //	printf("CLA %lx\n", parameter_argv); // why is this not printed
 	return parameter_argv;
 }
 
 //struct timespec bltn_timer_start, bltn_timer_end;
 struct timeval bltn_timer_start, bltn_timer_end;
-scm bltn_timer() {
+scm bltn_timer(void) ALIGN {
 	gettimeofday(&bltn_timer_end, NULL);
 //	clock_gettime(CLOCK_MONOTONIC_RAW, &bltn_timer_end);
 	
