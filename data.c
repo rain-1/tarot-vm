@@ -247,28 +247,11 @@ struct info_list {
 	struct info_list *next;
 };
 
-struct info_list *info_all;
-
-struct info_list *info_findplace(struct info_list *l, scm *addr) {
-	if(l == NULL)
-		return NULL;
-	
-	if(addr >= l->addr)
-		return NULL;
-	
-	if(!l->next)
-		return l;
-	
-	if(addr >= l->next->addr)
-		return l;
-	
-	return info_findplace(l->next, addr);
-}
+struct info_list *info_all = NULL;
 
 void information_store(scm *addr, scm *addr2, char *info)
 {
 	struct info_list *i;
-	struct info_list *place;
 
 	i = malloc(sizeof(struct info_list));
 	i->addr = addr;
@@ -277,40 +260,30 @@ void information_store(scm *addr, scm *addr2, char *info)
 	i->info = strdup(info);
 	i->next = NULL;
 
-//printf("stored information %s %p %p\n", info, addr, addr2);
+	// store it in order, only take into account i->addr.
+	// smallest first
 	
-	place = info_findplace(info_all, addr);
-	if(!place) {
-		i->next = info_all;
+	// if theres nothing, start the list off
+	if(!info_all) {
 		info_all = i;
+		return;
 	}
-	else {
-		// place is the last node below this node
-		
-		if(place->next)
-			i->next = place->next->next;
-		place->next = i;
-	}
+	
+	i->next = info_all;
+	info_all = i;
 }
 
 char *information_lookup(scm *addr)
 {
-	struct info_list *l = info_findplace(info_all, addr);
+	struct info_list *place;
 
-	if(!l)
-		return "***";
+	for(place = info_all; place; place = place->next) {
+		if(place->addr <= addr && addr <= place->addr2) {
+			return place->info;
+		}
+	}
 	
-	if(!(l->next))
-		return "***";
-	
-	l = l->next;
-	
-	if(l->addr <= addr && addr <= l->addr2)
-		return l->info;
-
-//	printf("FAIL @ %s %p %p %p\n", l->info, l->addr, addr, l->addr2);
-	
-	return "???";
+	return "***";
 }
 
 void stack_trace()
@@ -323,6 +296,9 @@ void stack_trace()
 	fprintf(stderr, "=======================\n");
 	fprintf(stderr, "STACK TRACE\n");
 	
+	ret_addr = interpreter_eip;
+	fprintf(stderr, "[%14lx] %s\n", ret_addr-vm_code, information_lookup(ret_addr));
+
 	gc_stack_ptr = reg_rsp;
 	gc_stack_base_ptr = reg_rbp;
 	
@@ -339,7 +315,8 @@ void stack_trace()
 
 		// ret addr
 		ret_addr = PTR_SCM(stack[gc_stack_ptr--]);
-		fprintf(stderr, "%s\n", information_lookup(ret_addr));
+		if(ret_addr == NULL) break;
+		fprintf(stderr, "[%14lx] %s\n", ret_addr-vm_code, information_lookup(ret_addr));
 		
 		tmp = stack[gc_stack_ptr--];
 		assert(tmp == 0xC0FFEEEEEEEEEEEE);
