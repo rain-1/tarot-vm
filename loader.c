@@ -18,8 +18,6 @@ void load_code(FILE *fptr) {
 	char *w, *info;
 	scm sym, sym2;
 	
-	scm *beginning = vm_code + vm_code_size;
-
 	while((w = read_word(fptr))) {
 		if(!strcmp("halt",w)) {
 			vm_add_codeword(CODE_HALT);
@@ -172,8 +170,8 @@ void load_code(FILE *fptr) {
 			sym = load_number(fptr);
 			sym2 = load_number(fptr);
 			info = load_string(fptr);
-			information_store(beginning + sym,
-					  beginning + sym2,
+			information_store(vm_code + vm_code_size + sym,
+					  vm_code + vm_code_size + sym2,
 					  info);
 			continue;
 		}
