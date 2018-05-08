@@ -73,6 +73,10 @@ scm bltn_numberq(void) ALIGN {
 	return mk_bool(scm_gettag(STACK(0)) == TAG_NUMB);
 }
 
+scm bltn_procedureq(void) ALIGN {
+	return mk_bool(scm_gettag(STACK(0)) == TAG_BLTN || scm_gettag(STACK(0)) == TAG_CLOS);
+}
+
 void display_helper(FILE *to, scm atom);
 	
 scm bltn_error(void) ALIGN {
@@ -609,6 +613,7 @@ void builtins_init(scm argv) {
 	glovar_define(symtab_intern("char?"), mk_numb(1), mk_bltn(bltn_charq));
 	glovar_define(symtab_intern("boolean?"), mk_numb(1), mk_bltn(bltn_booleanq));
 	glovar_define(symtab_intern("number?"), mk_numb(1), mk_bltn(bltn_numberq));
+	glovar_define(symtab_intern("procedure?"), mk_numb(1), mk_bltn(bltn_procedureq));
 
 	// printing functions
 	glovar_define(symtab_intern("error"), mk_numb(1), mk_bltn(bltn_error));
