@@ -1,31 +1,37 @@
 #!/bin/sh
-set -x
-set -e
 
 CC=gcc
 CFLAGS+="-c -g -O3 -std=c99 -Wall -Werror -falign-functions=8 -D_GNU_SOURCE"
 
-makes builtins.o \
-	builtins.c builtins.h &&
-	$CC $CFLAGS -o builtins.o builtins.c
-makes data.o \
-	data.c data.h &&
-	$CC $CFLAGS -o data.o data.c
-makes gc.o \
-	gc.c gc.h &&
-	$CC $CFLAGS -o gc.o gc.c
-makes interpreter.o \
-	interpreter.c interpreter.h &&
-	$CC $CFLAGS -o interpreter.o interpreter.c
-makes loader.o \
-	loader.c loader.h &&
-	$CC $CFLAGS -o loader.o loader.c
-makes read_word.o \
-	read_word.c read_word.h &&
-	$CC $CFLAGS -o read_word.o read_word.c
-makes main.o \
-	main.c main.h &&
-	$CC $CFLAGS -o main.o main.c
-makes vm \
-	main.o read_word.o loader.o interpreter.o gc.o data.o builtins.o &&
-	$CC -o vm main.o read_word.o loader.o interpreter.o gc.o data.o builtins.o
+printf "%s\t" builtins.o \
+	builtins.c builtins.h -- \
+	"$CC $CFLAGS -o builtins.o builtins.c"
+echo
+printf "%s\t" data.o \
+	data.c data.h -- \
+	"$CC $CFLAGS -o data.o data.c"
+echo
+printf "%s\t" gc.o \
+	gc.c gc.h -- \
+	"$CC $CFLAGS -o gc.o gc.c"
+echo
+printf "%s\t" interpreter.o \
+	interpreter.c interpreter.h -- \
+	"$CC $CFLAGS -o interpreter.o interpreter.c"
+echo
+printf "%s\t" loader.o \
+	loader.c loader.h -- \
+	"$CC $CFLAGS -o loader.o loader.c"
+echo
+printf "%s\t" read_word.o \
+	read_word.c read_word.h -- \
+	"$CC $CFLAGS -o read_word.o read_word.c"
+echo
+printf "%s\t" main.o \
+	main.c -- \
+	"$CC $CFLAGS -o main.o main.c"
+echo
+printf "%s\t" vm \
+	main.o read_word.o loader.o interpreter.o gc.o data.o builtins.o -- \
+	"$CC -o vm main.o read_word.o loader.o interpreter.o gc.o data.o builtins.o"
+echo
