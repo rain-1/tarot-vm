@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 //#define TIME_GC
 #ifdef TIME_GC
@@ -119,9 +120,9 @@ struct timeval gc_timer_tmp;
 #endif
 
 void gc_report() {
-	printf("GC REPORT: %lu collections\n", gc_iterations);
+	printf("GC REPORT: %" PRIu64 " collections\n", gc_iterations);
 #ifdef TIME_GC
-	printf("GC REPORT: %lu%% of time spent in GC\n", (100*gc_time_inside)/(gc_time_inside + gc_time_outside));
+	printf("GC REPORT: %" PRIu64 "%% of time spent in GC\n", (100*gc_time_inside)/(gc_time_inside + gc_time_outside));
 #endif
 }
 
