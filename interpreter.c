@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "qcodes.h"
 #include "objects.h"
@@ -173,7 +174,7 @@ void vm_exec(scm *codexxx) {
 		break;
 	default:
 		stack_trace();
-		fprintf(stderr, "call: not a closure 0x%lx %ld\n", reg_acc, scm_gettag(reg_acc));
+		fprintf(stderr, "call: not a closure 0x%" PRIx64 " %" PRId64 "\n", reg_acc, scm_gettag(reg_acc));
 		exit(1);
 	}
 	NEXT;

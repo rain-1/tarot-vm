@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <inttypes.h>
 
 #include "objects.h"
 #include "data.h"
@@ -109,7 +110,7 @@ scm bltn_display_port(void) ALIGN {
 		to = port_get_file(port);
 	}
 	else {
-		printf("DBG tag %lu\n", scm_gettag(atom));
+		printf("DBG tag %" PRIu64 "\n", scm_gettag(atom));
 		info_assert("not a port" == 0);
 	}
 
@@ -141,7 +142,7 @@ void display_helper(FILE *to, scm atom) {
 		break;
 	
 	case TAG_NUMB:
-		fprintf(to, "%ld", get_numb(atom));
+		fprintf(to, "%" PRId64, get_numb(atom));
 		break;
 
 	case TAG_STRG:
@@ -149,7 +150,7 @@ void display_helper(FILE *to, scm atom) {
 		break;
 
 	default:
-		fprintf(stderr, "Unsupported type in call to print, atom=%lu\n", atom);
+		fprintf(stderr, "Unsupported type in call to print, atom=%" PRIu64 "\n", atom);
 		break;
 	}
 }

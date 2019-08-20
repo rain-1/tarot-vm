@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <string.h>
 #include <search.h>
+#include <inttypes.h>
 
 #include "objects.h"
 #include "data.h"
@@ -50,7 +51,7 @@ void vm_add_codeword(scm w)
 void vm_dump_code()
 {
 	for(int i = 0; i < vm_code_size; i++) {
-		printf("%p %lu\n", vm_code+i, vm_code[i]);
+		printf("%p %" PRIu64 "\n", vm_code+i, vm_code[i]);
 	}
 }
 
